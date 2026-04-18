@@ -27,22 +27,26 @@ DEP_FLAGS := $(CFLAGS_UV) $(CFLAGS_LZ4) $(CFLAGS_ZLIB)
 LIBS := $(LIBS_UV) $(LIBS_LZ4) $(LIBS_ZLIB)
 
 OBJDIR := obj
-MKDIRS := $(OBJDIR)/src $(OBJDIR)/cli $(OBJDIR)/zopfli/src/zopfli
+MKDIRS := $(OBJDIR)/src $(OBJDIR)/maxcsolib $(OBJDIR)/LibTest $(OBJDIR)/deps/zopfli/src/zopfli
 
 SRC_CFLAGS += -W -Wall -Wextra -Wno-implicit-function-declaration -DNDEBUG=1
-SRC_CXXFLAGS += -W -Wall -Wextra -std=c++11 -I$(SRCDIR)/zopfli/src -I$(SRCDIR)/7zip \
-	-DNDEBUG=1 -I$(SRCDIR)/libdeflate -Wno-unused-parameter -Wno-unused-variable \
+SRC_CXXFLAGS += -W -Wall -Wextra -std=c++11 -I$(SRCDIR)/deps/zopfli/src -I$(SRCDIR)/deps/7zip \
+	-DNDEBUG=1 -I$(SRCDIR)/deps/libdeflate -Wno-unused-parameter -Wno-unused-variable \
 	-pthread $(DEP_FLAGS)
 
 SRC_CXX_SRC := $(wildcard $(SRCDIR)/src/*.cpp)
 SRC_CXX_TMP := $(SRC_CXX_SRC:.cpp=.o)
 SRC_CXX_OBJ := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(SRC_CXX_TMP))
 
-CLI_CXX_SRC := $(wildcard $(SRCDIR)/cli/*.cpp)
-CLI_CXX_TMP := $(CLI_CXX_SRC:.cpp=.o)
-CLI_CXX_OBJ := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(CLI_CXX_TMP))
+LIB_CXX_SRC := $(wildcard $(SRCDIR)/maxcsolib/*.cpp)
+LIB_CXX_TMP := $(LIB_CXX_SRC:.cpp=.o)
+LIB_CXX_OBJ := $(patsubst &(SRCDIR)/%,$(OBJDIR)/%,$(LIB_CXX_TMP))
 
-ZOPFLI_C_DIR := $(SRCDIR)/zopfli/src/zopfli
+TEST_CXX_SRC := $(wildcard $(SRCDIR)/LibTest/*.cpp)
+TEST_CXX_TMP := $(TEST_CXX_SRC:.cpp=.o)
+TEST_CXX_OBJ := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(TEST_CXX_TMP))
+
+ZOPFLI_C_DIR := $(SRCDIR)/deps/zopfli/src/zopfli
 ZOPFLI_C_SRC := $(ZOPFLI_C_DIR)/blocksplitter.c $(ZOPFLI_C_DIR)/cache.c \
                $(ZOPFLI_C_DIR)/deflate.c $(ZOPFLI_C_DIR)/gzip_container.c \
                $(ZOPFLI_C_DIR)/hash.c $(ZOPFLI_C_DIR)/katajainen.c \
@@ -60,9 +64,9 @@ else
 endif
 
 SRC_7ZIP := $(OBJDIR)/7zip/7zip.a
-SRC_LIBDEFLATE := $(SRCDIR)/libdeflate/$(LIBDEFLATE)
+SRC_LIBDEFLATE := $(SRCDIR)/deps/libdeflate/$(LIBDEFLATE)
 
-OBJS := $(SRC_CXX_OBJ) $(CLI_CXX_OBJ) $(ZOPFLI_C_OBJ) $(SRC_7ZIP)
+OBJS := $(SRC_CXX_OBJ) $(LIB_CXX_OBJ) $(TEST_CXX_OBJ) $(ZOPFLI_C_OBJ) $(SRC_7ZIP)
 
 ifeq ($(USE_EXTERNAL_LIBDEFLATE), 0)
 	OBJS += $(SRC_LIBDEFLATE)
@@ -75,7 +79,7 @@ endif
 
 .PHONY: all clean install uninstall
 
-all: maxcso
+all: LibTesty
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)/.done
 	$(CXX) -c $(SRC_CXXFLAGS) $(CXXFLAGS) -o $@ $<
@@ -83,32 +87,20 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)/.done
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(OBJDIR)/.done
 	$(CC) -c $(SRC_CFLAGS) $(CFLAGS) -o $@ $<
 
-maxcso: $(OBJS)
+LibTesty: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $(SRC_CXXFLAGS) $(CXXFLAGS) $^ $(LIBS)
 
 $(SRC_7ZIP):
-	$(MAKE) -f $(SRCDIR)/7zip/Makefile 7zip.a
+	$(MAKE) -f $(SRCDIR)/deps/7zip/Makefile 7zip.a
 
 $(SRC_LIBDEFLATE):
-	$(MAKE) -C $(SRCDIR)/libdeflate $(LIBDEFLATE)
+	$(MAKE) -C $(SRCDIR)/deps/libdeflate $(LIBDEFLATE)
 
 $(OBJDIR)/.done:
 	@mkdir -p $(MKDIRS)
 	@touch $@
 
-install: all
-	mkdir -p $(DESTDIR)$(BINDIR)
-	mkdir -p $(DESTDIR)$(MANDIR)/man1
-	cp maxcso $(DESTDIR)$(BINDIR)
-	cp $(SRCDIR)/maxcso.1 $(DESTDIR)$(MANDIR)/man1
-	chmod 0755 $(DESTDIR)$(BINDIR)/maxcso
-	chmod 0644 $(DESTDIR)$(MANDIR)/man1/maxcso.1
-
-uninstall:
-	rm -f $(DESTDIR)$(BINDIR)/maxcso
-	rm -f $(DESTDIR)$(MANDIR)/man1/maxcso.1
-
 clean:
 	rm -rf -- $(OBJDIR)
-	rm -f maxcso
-	$(MAKE) -C $(SRCDIR)/libdeflate clean
+	rm -f LibTesty
+	$(MAKE) -C $(SRCDIR)/deps/libdeflate clean

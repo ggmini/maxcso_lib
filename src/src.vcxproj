@@ -39,22 +39,22 @@
     <ClInclude Include="uv_helper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\7zip\7zip.vcxproj">
+    <ProjectReference Include="..\deps\7zip\7zip.vcxproj">
       <Project>{6343b36e-030f-4a66-a588-758b2e2b5bee}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libdeflate\libdeflate.vcxproj">
+    <ProjectReference Include="..\deps\libdeflate\libdeflate.vcxproj">
       <Project>{7a7902db-786b-4a73-a68e-6d633ea1401d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libuv\libuv.vcxproj">
+    <ProjectReference Include="..\deps\libuv\libuv.vcxproj">
       <Project>{33066374-88cb-cb8d-15da-61032886329a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\zlib\zlib.vcxproj">
+    <ProjectReference Include="..\deps\zlib\zlib.vcxproj">
       <Project>{f761046e-6c38-4428-a5f1-38391a37bb34}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\zopfli\zopfli.vcxproj">
+    <ProjectReference Include="..\deps\zopfli\zopfli.vcxproj">
       <Project>{6343b36e-030f-4a66-a588-758b2e2b5bed}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\lz4\lz4.vcxproj">
+    <ProjectReference Include="..\deps\lz4\lz4.vcxproj">
       <Project>{f761046e-6c38-4428-b5f2-38391a37bb34}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -62,6 +62,7 @@
     <ProjectGuid>{F761046E-6C38-4428-A5F1-38391A37BB35}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>src</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -74,7 +75,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -88,7 +89,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -144,7 +145,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>../libuv/include;../zlib;../zopfli/src;../7zip;../lz4/lib;../libdeflate</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../deps/libuv/include;../deps/zlib;../deps/zopfli/src;../deps/7zip;../deps/lz4/lib;../deps/libdeflate</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -173,7 +174,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>../libuv/include;../zlib;../zopfli/src;../7zip;../lz4/lib;../libdeflate</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../deps/libuv/include;../deps/zlib;../deps/zopfli/src;../deps/7zip;../deps/lz4/lib;../deps/libdeflate</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -203,7 +204,7 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <OmitFramePointers>true</OmitFramePointers>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>../libuv/include;../zlib;../zopfli/src;../7zip;../lz4/lib;../libdeflate</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../deps/libuv/include;../deps/zlib;../deps/zopfli/src;../deps/7zip;../deps/lz4/lib;../deps/libdeflate</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -234,7 +235,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>../libuv/include;../zlib;../zopfli/src;../7zip;../lz4/lib;../libdeflate</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../deps/libuv/include;../deps/zlib;../deps/zopfli/src;../deps/7zip;../deps/lz4/lib;../deps/libdeflate</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
