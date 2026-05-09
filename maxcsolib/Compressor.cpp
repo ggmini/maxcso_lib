@@ -103,7 +103,7 @@ namespace maxcsolib {
                     double speed = elapsed == 0 ? 0 : (diff * b_to_mb) / (elapsed * ns_to_s);
 
                     char temp[128];
-                    sprintf_s(temp, "%3.0f%%, ratio=%3.0f%%, speed=%5.2d MB/s", percent, ratio, speed);
+                    sprintf(temp, "%3.0f%%, ratio=%3.0f%%, speed=%5.2f MB/s", percent, ratio, speed);
                     statusInfo = temp;
 
                     next = now + interval_ns;
@@ -115,7 +115,7 @@ namespace maxcsolib {
             else if (status == maxcso::TASK_SUCCESS) {
                 double ratio = total == 0 ? 0.0 : (written * 100.0) / total;
                 char temp[128];
-                sprintf_s(temp, "%" PRId64 " -> %" PRId64 "bytes (%.0f%%)\n", total, written, ratio);
+                sprintf(temp, "%" PRId64 " -> %" PRId64 "bytes (%.0f%%)\n", total, written, ratio);
                 statusInfo = temp;
             }
             else

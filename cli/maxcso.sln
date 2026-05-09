@@ -1,23 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.645
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11620.152 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cli", "cli.vcxproj", "{726474B8-FA25-4D84-B5FD-60AD025CE1BF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\zlib\zlib.vcxproj", "{F761046E-6C38-4428-A5F1-38391A37BB34}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\deps\zlib\zlib.vcxproj", "{F761046E-6C38-4428-A5F1-38391A37BB34}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zopfli", "..\zopfli\zopfli.vcxproj", "{6343B36E-030F-4A66-A588-758B2E2B5BED}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zopfli", "..\deps\zopfli\zopfli.vcxproj", "{6343B36E-030F-4A66-A588-758B2E2B5BED}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuv", "..\libuv\libuv.vcxproj", "{33066374-88CB-CB8D-15DA-61032886329A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libuv", "..\deps\libuv\libuv.vcxproj", "{33066374-88CB-CB8D-15DA-61032886329A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zip", "..\7zip\7zip.vcxproj", "{6343B36E-030F-4A66-A588-758B2E2B5BEE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zip", "..\deps\7zip\7zip.vcxproj", "{6343B36E-030F-4A66-A588-758B2E2B5BEE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "src", "..\src\src.vcxproj", "{F761046E-6C38-4428-A5F1-38391A37BB35}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz4", "..\lz4\lz4.vcxproj", "{F761046E-6C38-4428-B5F2-38391A37BB34}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz4", "..\deps\lz4\lz4.vcxproj", "{F761046E-6C38-4428-B5F2-38391A37BB34}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdeflate", "..\libdeflate\libdeflate.vcxproj", "{7A7902DB-786B-4A73-A68E-6D633EA1401D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdeflate", "..\deps\libdeflate\libdeflate.vcxproj", "{7A7902DB-786B-4A73-A68E-6D633EA1401D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibTest", "..\LibTest\LibTest.vcxproj", "{A45ED622-A7C4-4301-9457-6AACECB36BAD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maxcsolib", "..\maxcsolib\maxcsolib.vcxproj", "{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +95,22 @@ Global
 		{7A7902DB-786B-4A73-A68E-6D633EA1401D}.Release|Win32.Build.0 = Release|Win32
 		{7A7902DB-786B-4A73-A68E-6D633EA1401D}.Release|x64.ActiveCfg = Release|x64
 		{7A7902DB-786B-4A73-A68E-6D633EA1401D}.Release|x64.Build.0 = Release|x64
+		{A45ED622-A7C4-4301-9457-6AACECB36BAD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A45ED622-A7C4-4301-9457-6AACECB36BAD}.Debug|Win32.Build.0 = Debug|Win32
+		{A45ED622-A7C4-4301-9457-6AACECB36BAD}.Debug|x64.ActiveCfg = Debug|x64
+		{A45ED622-A7C4-4301-9457-6AACECB36BAD}.Debug|x64.Build.0 = Debug|x64
+		{A45ED622-A7C4-4301-9457-6AACECB36BAD}.Release|Win32.ActiveCfg = Release|Win32
+		{A45ED622-A7C4-4301-9457-6AACECB36BAD}.Release|Win32.Build.0 = Release|Win32
+		{A45ED622-A7C4-4301-9457-6AACECB36BAD}.Release|x64.ActiveCfg = Release|x64
+		{A45ED622-A7C4-4301-9457-6AACECB36BAD}.Release|x64.Build.0 = Release|x64
+		{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}.Debug|Win32.Build.0 = Debug|Win32
+		{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}.Debug|x64.ActiveCfg = Debug|x64
+		{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}.Debug|x64.Build.0 = Debug|x64
+		{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}.Release|Win32.ActiveCfg = Release|Win32
+		{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}.Release|Win32.Build.0 = Release|Win32
+		{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}.Release|x64.ActiveCfg = Release|x64
+		{1F66165A-1E73-4CC7-B81C-2B9FB7D52D84}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
