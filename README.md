@@ -1,3 +1,6 @@
+> [!CAUTION]
+> As far as I can tell this code is currently borked. The app will compile, but will crash pretty quickly. I have no idea when this issue will be fixed. It seems like the original repo is also affected.
+
 Description
 ===========
 
