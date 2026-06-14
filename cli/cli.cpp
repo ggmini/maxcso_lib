@@ -14,6 +14,23 @@
 #include "../src/checksum.h"
 #include "uv.h"
 
+#if defined(_MSC_VER) && !defined(_llvm__) //TODO: check which msc ver bricked this && _MSC_VER
+#define WIN_UV_WRITE_WORKAROUND
+#endif
+
+#if defined WIN_UV_WRITE_WORKAROUND
+struct heap_write_req {
+	uv_write_t req;
+	char* data; // allocated copy of dynamic text (nullptr if none)
+};
+
+static void heap_write_cb(uv_write_t* r, int /*status*/) {
+	heap_write_req* wr = reinterpret_cast<heap_write_req*>(r);
+	if (wr->data) free(wr->data);
+	free(wr);
+}
+#endif
+
 void show_version() {
 	fprintf(stderr, "maxcso v%s\n", maxcso::VERSION);
 }
@@ -492,9 +509,28 @@ int main(int argc, char *argv[]) {
 
 		unsigned int nbufs = 0;
 		if (formatting) {
+#ifdef WIN_UV_WRITE_WORKAROUND
+			heap_write_req* wr = (heap_write_req*)malloc(sizeof(*wr));
+			if (!wr) return;
+			// copy status string
+			size_t len = statusInfo.size();
+			char* copy = (char*)malloc(len + 1);
+			if (!copy) { free(wr); return; }
+			memcpy(copy, statusInfo.c_str(), len + 1);
+			wr->data = copy;
+
+			uv_buf_t bufs[2];
+			unsigned nbufs = 0;
+			bufs[nbufs++] = ::uv_buf_init(ANSI_RESET_LINE);           // literal OK
+			bufs[nbufs++] = ::uv_buf_init(copy, (unsigned)len);      // heap copy
+
+			int rc = uv_write(&wr->req, reinterpret_cast<uv_stream_t*>(&tty), bufs, nbufs, heap_write_cb);
+			if (rc != 0) { free(copy); free(wr); /* handle error if needed */ }
+#else
 			bufs[nbufs++] = uv_buf_init(ANSI_RESET_LINE);
 			bufs[nbufs++] = uv_buf_init(statusInfo);
 			uv_write(&write_req, reinterpret_cast<uv_stream_t *>(&tty), bufs, nbufs, nullptr);
+#endif
 		} else {
 			fprintf(stderr, "%s", statusInfo.c_str());
 		}
@@ -512,8 +548,27 @@ int main(int argc, char *argv[]) {
 		const std::string prefix = status == maxcso::TASK_SUCCESS ? "" : "Error while processing ";
 		statusInfo = (formatting ? ANSI_RESET_LINE : "") + prefix + task->input + ": " + reason + "\n";
 		if (formatting) {
+#ifdef WIN_UV_WRITE_WORKAROUND
+			heap_write_req* wr = (heap_write_req*)malloc(sizeof(*wr));
+			if (!wr) return;
+			// copy status string
+			size_t len = statusInfo.size();
+			char* copy = (char*)malloc(len + 1);
+			if (!copy) { free(wr); return; }
+			memcpy(copy, statusInfo.c_str(), len + 1);
+			wr->data = copy;
+
+			uv_buf_t bufs[2];
+			unsigned nbufs = 0;
+			bufs[nbufs++] = ::uv_buf_init(ANSI_RESET_LINE);           // literal OK
+			bufs[nbufs++] = ::uv_buf_init(copy, (unsigned)len);      // heap copy
+
+			int rc = uv_write(&wr->req, reinterpret_cast<uv_stream_t*>(&tty), bufs, nbufs, heap_write_cb);
+			if (rc != 0) { free(copy); free(wr); /* handle error if needed */ }
+#else
 			bufs[0] = uv_buf_init(statusInfo);
 			uv_write(&write_req, reinterpret_cast<uv_stream_t *>(&tty), bufs, 1, nullptr);
+#endif
 		} else {
 			fprintf(stderr, "%s", statusInfo.c_str());
 		}
