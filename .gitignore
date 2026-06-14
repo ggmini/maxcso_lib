@@ -73,3 +73,5 @@ LibTest/x64/Release/*
 .vscode/*
 path.txt
 LibTesty
+Debug/x64/*
+x64/*
