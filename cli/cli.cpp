@@ -453,8 +453,10 @@ int main(int argc, char *argv[]) {
 	std::fill(std::begin(history), std::end(history), History{0, next});
 
 	std::string statusInfo;
+#ifndef WIN_UV_WRITE_WORKAROUND
 	uv_write_t write_req;
 	uv_buf_t bufs[2];
+#endif
 
 	maxcso::ProgressCallback progress = [&] (const maxcso::Task *task, maxcso::TaskStatus status, int64_t pos, int64_t total, int64_t written) {
 		if (!formatting) {
@@ -507,7 +509,10 @@ int main(int argc, char *argv[]) {
 			statusInfo = task->input + ": " + statusInfo;
 		}
 
+#ifndef WIN_UV_WRITE_WORKAROUND
 		unsigned int nbufs = 0;
+#endif // DEBUG
+
 		if (formatting) {
 #ifdef WIN_UV_WRITE_WORKAROUND
 			heap_write_req* wr = (heap_write_req*)malloc(sizeof(*wr));
