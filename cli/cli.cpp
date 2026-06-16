@@ -14,7 +14,7 @@
 #include "../src/checksum.h"
 #include "uv.h"
 
-#if defined(_MSC_VER) && !defined(_llvm__) //TODO: check which msc ver bricked this && _MSC_VER
+#if defined(_MSC_VER) && !defined(NDEBUG)
 #define WIN_UV_WRITE_WORKAROUND
 #endif
 
