@@ -8,10 +8,7 @@
 
 #include <cinttypes>
 
-#if !_WINDLL
-#define sprintf_s(a, b, c, d, e) sprintf(a, b, c, d, e);
 #include <cstring>
-#endif
 
 //When compiling on MSVC an assertion will trigger in the libuv library on uv_write.
 //This is a workaround to avoid it. The workarund is only applied to MSVC Debug builds.
@@ -71,7 +68,7 @@ namespace maxcsolib {
 
     void update_threadpool(const Arguments& args) {
         char threadpool_size[32];
-        sprintf(threadpool_size, "%d", args.threads);
+        sprintf_s(threadpool_size, sizeof(threadpool_size), "%d", args.threads);
         setenv("UV_THREADPOOL_SIZE", threadpool_size, 1);
     }
 
@@ -124,7 +121,7 @@ namespace maxcsolib {
                     double speed = elapsed == 0 ? 0 : (diff * b_to_mb) / (elapsed * ns_to_s);
 
                     char temp[128];
-                    sprintf(temp, "%3.0f%%, ratio=%3.0f%%, speed=%5.2f MB/s", percent, ratio, speed);
+                    sprintf_s(temp, sizeof(temp), "%3.0f%%, ratio=%3.0f%%, speed=%5.2f MB/s", percent, ratio, speed);
                     statusInfo = temp;
 
                     next = now + interval_ns;
@@ -136,7 +133,7 @@ namespace maxcsolib {
             else if (status == maxcso::TASK_SUCCESS) {
                 double ratio = total == 0 ? 0.0 : (written * 100.0) / total;
                 char temp[128];
-                sprintf(temp, "%" PRId64 " -> %" PRId64 "bytes (%.0f%%)\n", total, written, ratio);
+                sprintf_s(temp, sizeof(temp), "%" PRId64 " -> %" PRId64 "bytes (%.0f%%)\n", total, written, ratio);
                 statusInfo = temp;
             }
             else
