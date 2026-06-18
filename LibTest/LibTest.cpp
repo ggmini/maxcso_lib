@@ -14,7 +14,8 @@ std::string getPathFromFile(){
 }
 
 int main() {
-    std::string path = getPathFromFile(); 
+    //std::string path = getPathFromFile(); 
+    std::string path = "H:\\pulse";
 
     maxcsolib::Arguments args;
     maxcsolib::default_args(args);

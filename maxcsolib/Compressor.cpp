@@ -73,6 +73,11 @@ namespace maxcsolib {
     }
 
     void Compressor::Compress(Arguments args) {
+        if (args.threads == 0) {
+            uv_cpu_info_t* cpus;
+            uv_cpu_info(&cpus, &args.threads);
+            uv_free_cpu_info(cpus, args.threads);
+        }
 
         update_threadpool(args);
 
