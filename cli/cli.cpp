@@ -14,7 +14,9 @@
 #include "../src/checksum.h"
 #include "uv.h"
 
-#if defined(_MSC_VER) && !defined(NDEBUG)
+//When compiling on MSVC an assertion will trigger in the libuv library on uv_write.
+//This is a workaround to avoid it. The workarund is only applied to MSVC Debug builds.
+#if defined(_MSC_VER) && !defined(NDEBUG) 
 #define WIN_UV_WRITE_WORKAROUND
 #endif
 
