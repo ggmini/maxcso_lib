@@ -79,6 +79,9 @@ namespace maxcsolib {
             uv_free_cpu_info(cpus, args.threads);
         }
 
+
+        args.flags_final = maxcso::TASKFLAG_NO_ZOPFLI | maxcso::TASKFLAG_NO_LIBDEFLATE | maxcso::TASKFLAG_NO_LZ4;
+
         update_threadpool(args);
 
         uv_loop_t loop;
