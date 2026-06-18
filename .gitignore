@@ -79,3 +79,4 @@ Debug/x64/*
 x64/*
 *.iso
 *.cso
+Release/x64/obj/*
