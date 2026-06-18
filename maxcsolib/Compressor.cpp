@@ -13,6 +13,12 @@
 #include <cstring>
 #endif
 
+//When compiling on MSVC an assertion will trigger in the libuv library on uv_write.
+//This is a workaround to avoid it. The workarund is only applied to MSVC Debug builds.
+#if defined(_MSC_VER) && !defined(NDEBUG)
+#define WIN_UV_WRITE_WORKAROUND
+#endif
+
 inline uv_buf_t uv_buf_init(const char* str) {
     return uv_buf_init(const_cast<char*>(str), static_cast<unsigned int>(strlen(str)));
 }
@@ -22,6 +28,19 @@ inline uv_buf_t uv_buf_init(const std::string& str) {
 }
 
 namespace maxcsolib {
+
+#ifdef WIN_UV_WRITE_WORKAROUND
+    struct heap_write_req {
+        uv_write_t req;
+        char* data; //allocated copy of dynamic text (nullptr if none)
+    };
+    
+    static void heap_write_cb(uv_write_t* r, int /*status*/) {
+        heap_write_req* req = reinterpret_cast<heap_write_req*>(r);
+        delete[] req->data;
+        delete req;
+    };
+#endif
 
     void default_args(Arguments& args) {
         args.threads = 0;
@@ -78,8 +97,10 @@ namespace maxcsolib {
         std::fill(std::begin(history), std::end(history), History{ 0, next });
 
         std::string statusInfo;
+#ifndef WIN_UV_WRITE_WORKAROUND
         uv_write_t write_req;
         uv_buf_t bufs[2];
+#endif
 
         maxcso::ProgressCallback progress = [&](const maxcso::Task* task, maxcso::TaskStatus status, int64_t pos, int64_t total, int64_t written) {
             if (!formatting) {
@@ -129,12 +150,38 @@ namespace maxcsolib {
                 statusInfo = "..." + task->input.substr(task->input.size() - 35) + ": " + statusInfo;
             else
                 statusInfo = task->input + ": " + statusInfo;
-
+#ifndef WIN_UV_WRITE_WORKAROUND
             unsigned int nbufs = 0;
+#endif
             if (formatting) {
+#ifdef WIN_UV_WRITE_WORKAROUND
+                heap_write_req* wr = (heap_write_req*)malloc(sizeof(*wr));
+                if (!wr) return;
+                //copy status string
+                size_t len = statusInfo.size();
+                char* copy = (char*)malloc(len + 1);
+                if (!copy) {
+                    free(wr);
+                    return;
+                }
+                memcpy(copy, statusInfo.c_str(), len + 1);
+                wr->data = copy;
+
+                uv_buf_t bufs[2];
+                unsigned nbufs = 0;
+                bufs[nbufs++] = ::uv_buf_init(ANSI_RESET_LINE);
+                bufs[nbufs++] = ::uv_buf_init(copy, (unsigned)len);
+
+                int rc = uv_write(&wr->req, reinterpret_cast<uv_stream_t*>(&tty), bufs, nbufs, heap_write_cb);
+                if (rc != 0) {
+                    free(copy);
+                    free(wr);
+                }
+#else
                 bufs[nbufs++] = uv_buf_init(ANSI_RESET_LINE);
                 bufs[nbufs++] = uv_buf_init(statusInfo);
                 uv_write(&write_req, reinterpret_cast<uv_stream_t*>(&tty), bufs, nbufs, nullptr);
+#endif
             }
             else
                 fprintf(stderr, "%s", statusInfo.c_str());
@@ -151,8 +198,33 @@ namespace maxcsolib {
             const std::string prefix = status == maxcso::TASK_SUCCESS ? "" : "Error while processing";
             statusInfo = (formatting ? ANSI_RESET_LINE : "") + prefix + task->input + ": " + reason + "\n";
             if (formatting) {
+#ifdef WIN_UV_WRITE_WORKAROUND
+                heap_write_req* wr = (heap_write_req*)malloc(sizeof(*wr));
+                if (!wr) return;
+                //copy status string
+                size_t len = statusInfo.size();
+                char* copy = (char*)malloc(len + 1);
+                if (!copy) {
+                    free(wr);
+                    return;
+                }
+                memcpy(copy, statusInfo.c_str(), len + 1);
+                wr->data = copy;
+
+                uv_buf_t bufs[2];
+                unsigned nbufs = 0;
+                bufs[nbufs++] = uv_buf_init(ANSI_RESET_LINE);
+                bufs[nbufs++] = uv_buf_init(copy, (unsigned)len);
+
+                int rc = uv_write(&wr->req, reinterpret_cast<uv_stream_t*>(&tty), bufs, nbufs, heap_write_cb);
+                if (rc != 0) {
+                    free(copy);
+                    free(wr);
+                }
+#else
                 bufs[0] = uv_buf_init(statusInfo);
                 uv_write(&write_req, reinterpret_cast<uv_stream_t*>(&tty), bufs, 1, nullptr);
+#endif
             }
             else
                 fprintf(stderr, "%s", statusInfo.c_str());
