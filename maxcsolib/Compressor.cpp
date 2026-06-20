@@ -108,6 +108,22 @@ namespace maxcsolib {
 #endif
 
         maxcso::ProgressCallback progress = [&](const maxcso::Task* task, maxcso::TaskStatus status, int64_t pos, int64_t total, int64_t written) {
+            int64_t now = uv_hrtime();
+            if (now >= next) {
+                double percent = total == 0 ? 0.0 : (pos * 100.0) / total;
+                double ratio = pos == 0 ? 0.0 : (written * 100.0) / pos;
+                History& entry = history[historyPos];
+                int64_t diff = pos - entry.pos;
+                int64_t elapsed = now - entry.time;
+                entry = { pos, now };
+                double speed = elapsed == 0 ? 0 : (diff * b_to_mb) / (elapsed * ns_to_s);
+
+
+                this->percent = percent;
+                this->ratio = ratio;
+                this->speed = speed;
+            }
+            
             if (!formatting) {
                 //Don't show progress if piping output, but do show final result
                 if (status != maxcso::TASK_SUCCESS || args.quiet) {
@@ -120,14 +136,6 @@ namespace maxcsolib {
             if (status == maxcso::TASK_INPROGRESS) {
                 int64_t now = uv_hrtime();
                 if (now >= next) {
-                    double percent = total == 0 ? 0.0 : (pos * 100.0) / total;
-                    double ratio = pos == 0 ? 0.0 : (written * 100.0) / pos;
-                    History& entry = history[historyPos];
-                    int64_t diff = pos - entry.pos;
-                    int64_t elapsed = now - entry.time;
-                    entry = { pos, now };
-                    double speed = elapsed == 0 ? 0 : (diff * b_to_mb) / (elapsed * ns_to_s);
-
                     char temp[128];
                     sprintf_s(temp, sizeof(temp), "%3.0f%%, ratio=%3.0f%%, speed=%5.2f MB/s", percent, ratio, speed);
                     statusInfo = temp;
@@ -155,6 +163,7 @@ namespace maxcsolib {
                 statusInfo = "..." + task->input.substr(task->input.size() - 35) + ": " + statusInfo;
             else
                 statusInfo = task->input + ": " + statusInfo;
+
 #ifndef WIN_UV_WRITE_WORKAROUND
             unsigned int nbufs = 0;
 #endif

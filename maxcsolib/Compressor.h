@@ -37,11 +37,20 @@ namespace maxcsolib {
 	void default_args(Arguments& args);
 
 	class Compressor {
+	private:
+		double percent;
+		double ratio;
+		double speed;
+	
 	public:
 		Compressor();
 		~Compressor();
 
 		void Compress(Arguments);
+
+		double GetPercent() const { return percent; }
+        double GetRatio() const { return ratio; }
+        double GetSpeed() const { return speed; }
 	};
 
 }
