@@ -2,6 +2,13 @@ Description
 ===========
 
 A fork of the MaxCSO application by Unkown Brackets, as a library to be integrated into other applications.
+Includes a little application to test if the library actually works.
+
+> [!WARNING]
+> This project is still a work in progress and is not ready to be used as a library yet. Certain functionality has yet to be exposed through the library. You may be able to make it work, if you dig deep enough, but some of these things will likely be changed in the future.
+
+> [!IMPORTANT]
+> While I'm developing for Windows and Linux (through MSVC and Make respectively), there is a chance that some updates will only be tested/available on Linux a bit later as I mainly develop on Windows. I'll probably try to fix this with workflows, but that doesn't account for updates to the Makefile, etc.
 
 
 Credits and licensing
@@ -31,7 +38,6 @@ Other tools
 [7-zip]: http://7-zip.org/
 [p7zip]: http://p7zip.sourceforge.net/
 [Zopfli]: https://github.com/google/zopfli
-[PPSSPP]: https://github.com/hrydgard/ppsspp
 [libuv]: https://github.com/joyent/libuv
 [libdeflate]: https://github.com/ebiggers/libdeflate
 [CisoPlus]: https://web.archive.org/web/20161223115412/http://cisoplus.pspgen.com/
@@ -41,5 +47,3 @@ Other tools
 [lz4]: https://github.com/lz4/lz4
 [CSO v2]: README_CSO.md
 [ZSO]: README_ZSO.md
-[GitHub releases]: https://github.com/unknownbrackets/maxcso/releases
-[examples]: https://github.com/unknownbrackets/maxcso/tree/master/examples
