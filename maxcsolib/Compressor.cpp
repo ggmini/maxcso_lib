@@ -107,23 +107,7 @@ namespace maxcsolib {
         uv_buf_t bufs[2];
 #endif
 
-        maxcso::ProgressCallback progress = [&](const maxcso::Task* task, maxcso::TaskStatus status, int64_t pos, int64_t total, int64_t written) {
-            int64_t now = uv_hrtime();
-            if (now >= next) {
-                double percent = total == 0 ? 0.0 : (pos * 100.0) / total;
-                double ratio = pos == 0 ? 0.0 : (written * 100.0) / pos;
-                History& entry = history[historyPos];
-                int64_t diff = pos - entry.pos;
-                int64_t elapsed = now - entry.time;
-                entry = { pos, now };
-                double speed = elapsed == 0 ? 0 : (diff * b_to_mb) / (elapsed * ns_to_s);
-
-
-                this->percent = percent;
-                this->ratio = ratio;
-                this->speed = speed;
-            }
-            
+        maxcso::ProgressCallback progress = [&](const maxcso::Task* task, maxcso::TaskStatus status, int64_t pos, int64_t total, int64_t written) {            
             if (!formatting) {
                 //Don't show progress if piping output, but do show final result
                 if (status != maxcso::TASK_SUCCESS || args.quiet) {
@@ -136,6 +120,19 @@ namespace maxcsolib {
             if (status == maxcso::TASK_INPROGRESS) {
                 int64_t now = uv_hrtime();
                 if (now >= next) {
+                    double percent = total == 0 ? 0.0 : (pos * 100.0) / total;
+                    double ratio = pos == 0 ? 0.0 : (written * 100.0) / pos;
+                    History& entry = history[historyPos];
+                    int64_t diff = pos - entry.pos;
+                    int64_t elapsed = now - entry.time;
+                    entry = { pos, now };
+                    double speed = elapsed == 0 ? 0 : (diff * b_to_mb) / (elapsed * ns_to_s);
+
+
+                    this->_percent = percent;
+                    this->_ratio = ratio;
+                    this->_speed = speed;
+                    this->_data_available = true;
                     char temp[128];
                     sprintf_s(temp, sizeof(temp), "%3.0f%%, ratio=%3.0f%%, speed=%5.2f MB/s", percent, ratio, speed);
                     statusInfo = temp;

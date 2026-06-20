@@ -38,19 +38,21 @@ namespace maxcsolib {
 
 	class Compressor {
 	private:
-		double percent;
-		double ratio;
-		double speed;
-	
+		double _percent;
+		double _ratio;
+		double _speed;
+        bool _data_available;
+
 	public:
 		Compressor();
 		~Compressor();
 
 		void Compress(Arguments);
 
-		double GetPercent() const { return percent; }
-        double GetRatio() const { return ratio; }
-        double GetSpeed() const { return speed; }
+		double Percent() const { return _percent; }
+        double Ratio() const { return _ratio; }
+        double Speed() const { return _speed; }
+        bool DataAvailable() const { return _data_available; }
 	};
 
 }
