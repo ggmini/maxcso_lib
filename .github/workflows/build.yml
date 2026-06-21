@@ -1,0 +1,33 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE.md'
+      - '.{gitignore,gitattributes}'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE.md'
+      - '.{gitignore,gitattributes}'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Build Tools
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Build Release
+        run: msbuild.exe maxcso_lib.sln -m -p:Configuration=Release -p:Platform=x64 -p:TrackFileAccess=false
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+          make
