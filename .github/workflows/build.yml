@@ -21,7 +21,7 @@ jobs:
       - name: Setup Build Tools
         uses: microsoft/setup-msbuild@v1.1
       - name: Build Release
-        run: msbuild.exe maxcso_lib.sln -m -p:Configuration=Release -p:Platform=x64 -p:TrackFileAccess=false
+        run: msbuild.exe maxcso_lib.sln -m -p:Configuration=Release -p:Platform=x64 -p:TrackFileAccess=false /target:maxcsolib
 
   build-linux:
     runs-on: ubuntu-latest
