@@ -68,7 +68,11 @@ namespace maxcsolib {
 
     void update_threadpool(const Arguments& args) {
         char threadpool_size[32];
+#if _WINDLL
         sprintf_s(threadpool_size, sizeof(threadpool_size), "%d", args.threads);
+#else
+        sprintf(threadpool_size, "%d", args.threads);
+#endif
         setenv("UV_THREADPOOL_SIZE", threadpool_size, 1);
     }
 
@@ -134,7 +138,11 @@ namespace maxcsolib {
                     this->_speed = speed;
                     this->_data_available = true;
                     char temp[128];
+#if _WINDLL
                     sprintf_s(temp, sizeof(temp), "%3.0f%%, ratio=%3.0f%%, speed=%5.2f MB/s", percent, ratio, speed);
+#else
+                    sprintf(temp, "%3.0f%%, ratio=%3.0f%%, speed=%5.2f MB/s", percent, ratio, speed);
+#endif
                     statusInfo = temp;
 
                     next = now + interval_ns;
@@ -146,7 +154,11 @@ namespace maxcsolib {
             else if (status == maxcso::TASK_SUCCESS) {
                 double ratio = total == 0 ? 0.0 : (written * 100.0) / total;
                 char temp[128];
+#if _WINDLL
                 sprintf_s(temp, sizeof(temp), "%" PRId64 " -> %" PRId64 "bytes (%.0f%%)\n", total, written, ratio);
+#else
+                sprintf(temp, "%" PRId64 " -> %" PRId64 " bytes (%.0f%%)\n", total, written, ratio);
+#endif
                 statusInfo = temp;
             }
             else
