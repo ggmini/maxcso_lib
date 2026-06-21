@@ -40,7 +40,7 @@ SRC_CXX_OBJ := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(SRC_CXX_TMP))
 
 LIB_CXX_SRC := $(wildcard $(SRCDIR)/maxcsolib/*.cpp)
 LIB_CXX_TMP := $(LIB_CXX_SRC:.cpp=.o)
-LIB_CXX_OBJ := $(patsubst &(SRCDIR)/%,$(OBJDIR)/%,$(LIB_CXX_TMP))
+LIB_CXX_OBJ := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(LIB_CXX_TMP))
 
 TEST_CXX_SRC := $(wildcard $(SRCDIR)/LibTest/*.cpp)
 TEST_CXX_TMP := $(TEST_CXX_SRC:.cpp=.o)
