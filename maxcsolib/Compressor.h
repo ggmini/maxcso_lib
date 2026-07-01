@@ -43,6 +43,9 @@ namespace maxcsolib {
 		double _speed;
         bool _data_available;
 
+		void get_threads(Arguments& args);
+		void validate_args(Arguments& args);
+
 	public:
 		Compressor();
 		~Compressor();

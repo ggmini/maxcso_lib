@@ -76,6 +76,28 @@ namespace maxcsolib {
         setenv("UV_THREADPOOL_SIZE", threadpool_size, 1);
     }
 
+    void Compressor::get_threads(Arguments& args) {
+        if (args.threads == 0) {
+            uv_cpu_info_t* cpus;
+            uv_cpu_info(&cpus, &args.threads);
+            uv_free_cpu_info(cpus, args.threads);
+        } //TODO: check if we're over the available threads        
+    }
+
+    void Compressor::validate_args(Arguments& args) {
+        get_threads(args);
+
+        if (args.flags_fmt & maxcso::TASKFLAG_FMT_CSO_2) {
+		args.flags_final = maxcso::TASKFLAG_NO_ZOPFLI | maxcso::TASKFLAG_NO_LZ4_HC_BRUTE;
+        } else if (args.flags_fmt & maxcso::TASKFLAG_FMT_ZSO) {
+            args.flags_final = maxcso::TASKFLAG_NO_ZLIB | maxcso::TASKFLAG_NO_7ZIP | maxcso::TASKFLAG_NO_ZOPFLI | maxcso::TASKFLAG_NO_LZ4_HC_BRUTE | maxcso::TASKFLAG_NO_LIBDEFLATE;
+        } else {
+            // CSO v1 or DAX, just disable lz4, zopfli, and libdeflate.
+            // We disable libdeflate because some CFW can't handle its output.
+            args.flags_final = maxcso::TASKFLAG_NO_ZOPFLI | maxcso::TASKFLAG_NO_LIBDEFLATE | maxcso::TASKFLAG_NO_LZ4;
+        }    
+    }
+
     void Compressor::Compress(Arguments args) {
         if (args.threads == 0) {
             uv_cpu_info_t* cpus;
@@ -84,7 +106,7 @@ namespace maxcsolib {
         }
 
 
-        args.flags_final = maxcso::TASKFLAG_NO_ZOPFLI | maxcso::TASKFLAG_NO_LIBDEFLATE | maxcso::TASKFLAG_NO_LZ4;
+        validate_args(args);
 
         update_threadpool(args);
 
